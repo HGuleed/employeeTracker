@@ -22,8 +22,8 @@ const addDepart = {
 const addRole = [
   {
     type: "input",
-    name: "addRole",
-    message: "What is the role you would like to add?",
+    name: "title",
+    message: "What is the title for the role you would like to add?",
   },
   {
     type: "input",
@@ -38,4 +38,32 @@ const addRole = [
   },
 ];
 
-module.exports = { initQuest, addDepart, addRole };
+const addEmployee = [
+  {
+    type: "input",
+    name: "firstName",
+    message: "What is the first name of the employee?",
+  },
+  {
+    type: "input",
+    name: "lastName",
+    message: "What is the last name of the employee?",
+  },
+  {
+    type: "list",
+    name: "role",
+    message: "What is the employee's role?",
+    choices: [
+      "Human Resources Representative",
+      "Financial Advisor",
+      "Marketing Agent",
+      "Sales Agent",
+    ],
+  },
+  {
+    type: "list",
+    name: "manager",
+    message: "",
+  },
+];
+module.exports = { initQuest, addDepart, addRole, addEmployee };

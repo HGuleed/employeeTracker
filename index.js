@@ -1,3 +1,6 @@
+const db = require("./db/connection");
+let employeeName = [];
+
 const initQuest = {
   type: "list",
   name: "initQuest",
@@ -61,4 +64,195 @@ const addEmployee = [
     ],
   },
 ];
-module.exports = { initQuest, addDepart, addRole, addEmployee };
+function employees() {
+  const sql = `SELECT first_name FROM employee`;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    employeeName.push(rows);
+  });
+}
+// const updateEm = [
+//   {
+//     type: "input",
+//     name: "select_employee",
+//     message: 'Please select the employee you want to update',
+//     choices:[employees]
+//   },
+// ];
+
+function viewDep() {
+  let mysql = `SELECT department_name FROM departments;`;
+  db.query(mysql, (err, rows) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.table(rows);
+    // return rows;
+  });
+}
+
+function viewRole() {
+  let mysql = `SELECT roles.title, roles.salary, roles.id AS roles_id, departments.department_name FROM  roles INNER JOIN departments on roles.department_id = departments.id;
+  `;
+  db.query(mysql, (err, rows) => {
+    if (err) {
+      console.table(err);
+      return;
+    }
+    console.table(rows);
+    // return rows;
+  });
+}
+function viewEmploy() {
+  let mysql = `SELECT employee.id AS employee_id, employee.first_name, employee.last_name, roles.title, departments.department_name, roles.salary, manager.first_name AS manager  FROM employee INNER JOIN roles on employee.role_id = roles.id INNER JOIN departments on roles.department_id = departments.id INNER JOIN employee manager  on manager.id = employee.manager_id;`;
+  db.query(mysql, (err, rows) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.table(rows);
+    // return rows;
+  });
+}
+
+function addDep() {
+  inquirer.prompt(addDepart).then((data) => {
+    let mysql = `INSERT INTO departments(department_name) VALUE (?);`;
+    const params = data.departName;
+    db.query(mysql, params, (err, rows) => {
+      if (err) {
+        console.log(err);
+      } else {
+        return `Added ${rows}`;
+      }
+    });
+  });
+}
+
+function addRoles() {
+  inquirer.prompt(addRole).then((data) => {
+    console.log(data.department, data.title, data.salary);
+    switch (data.department) {
+      case "Human Resources":
+        let mysql = `INSERT INTO roles(title, salary, department_id)
+            Values('${data.title}', '${data.salary}', 1)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added role`;
+          }
+        });
+        break;
+
+      case "Finance":
+        mysql = `INSERT INTO roles(title, salary, department_id)
+              Values('${data.title}', '${data.salary}', 2)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added ${rows}`;
+          }
+        });
+        break;
+
+      case "Marketing":
+        mysql = `INSERT INTO roles(title, salary, department_id)
+              Values('${data.title}', '${data.salary}', 4)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added ${rows}`;
+          }
+        });
+        break;
+
+      case "Sales":
+        mysql = `INSERT INTO roles(title, salary, department_id)
+              Values('${data.title}', '${data.salary}', 3)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added ${rows}`;
+          }
+        });
+        break;
+    }
+  });
+}
+
+function addEmploy() {
+  inquirer.prompt(addEmployee).then((data) => {
+    console.log(data);
+    switch (data.role) {
+      case "Human Resources Representative":
+        mysql = `INSERT INTO employee(first_name, last_name, role_id, manager_id)
+            Values('${data.firstName}', '${data.lastName}',5, 1)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added role`;
+          }
+        });
+        break;
+
+      case "Financial Advisor":
+        mysql = `INSERT INTO employee(first_name, last_name, role_id, manager_id)
+              Values('${data.firstName}', '${data.lastName}',6, 2)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added role`;
+          }
+        });
+        break;
+
+      case "Sale Representative":
+        mysql = `INSERT INTO employee(first_name, last_name, role_id, manager_id)
+                Values('${data.firstName}', '${data.lastName}',7, 3)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added role`;
+          }
+        });
+        break;
+
+      case "Marketing":
+        mysql = `INSERT INTO employee(first_name, last_name, role_id, manager_id)
+                  Values('${data.firstName}', '${data.lastName}',8, 4)`;
+        db.query(mysql, (err, rows) => {
+          if (err) {
+            console.log(err);
+          } else {
+            return `Added role`;
+          }
+        });
+        break;
+    }
+  });
+}
+
+function updateEmploy() {}
+module.exports = {
+  initQuest,
+  addDepart,
+  addRole,
+  addEmployee,
+  viewDep,
+  viewRole,
+  viewEmploy,
+  addDep,
+  addRoles,
+  addEmploy,
+  employeeName,
+};

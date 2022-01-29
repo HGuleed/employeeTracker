@@ -60,10 +60,5 @@ const addEmployee = [
       "Sales Agent",
     ],
   },
-  {
-    type: "list",
-    name: "manager",
-    message: "",
-  },
 ];
 module.exports = { initQuest, addDepart, addRole, addEmployee };

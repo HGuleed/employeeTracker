@@ -16,7 +16,7 @@ const {
   employeeName,
 } = require("./index.js");
 
-console.log(employeeName);
+// console.log(employeeName);
 function init() {
   inquirer.prompt(initQuest).then((data) => {
     // console.log(data);
@@ -42,7 +42,7 @@ function init() {
         addRoles();
         break;
       case "Add an employee":
-        console.log("add employee");
+        // console.log("add employee");
         addEmploy();
         break;
       case "Update employee role":

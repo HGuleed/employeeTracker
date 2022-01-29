@@ -1,5 +1,9 @@
 const db = require("./db/connection");
+const inquirer = require("inquirer");
+let mysql = "";
+
 let employeeName = [];
+let departments = ["Human Resources", "Finance", "Marketing", "Sales"];
 
 const initQuest = {
   type: "list",
@@ -37,7 +41,7 @@ const addRole = [
     type: "list",
     name: "department",
     message: "What department is the role for?",
-    choices: ["Human Resources", "Finance", "Marketing", "Sales"],
+    choices: departments,
   },
 ];
 
@@ -65,7 +69,7 @@ const addEmployee = [
   },
 ];
 function employees() {
-  const sql = `SELECT first_name FROM employee`;
+  sql = `SELECT first_name FROM employee`;
   db.query(sql, (err, rows) => {
     if (err) {
       throw err;
@@ -83,7 +87,7 @@ function employees() {
 // ];
 
 function viewDep() {
-  let mysql = `SELECT department_name FROM departments;`;
+  mysql = `SELECT department_name FROM departments;`;
   db.query(mysql, (err, rows) => {
     if (err) {
       console.log(err);
@@ -95,7 +99,7 @@ function viewDep() {
 }
 
 function viewRole() {
-  let mysql = `SELECT roles.title, roles.salary, roles.id AS roles_id, departments.department_name FROM  roles INNER JOIN departments on roles.department_id = departments.id;
+  mysql = `SELECT roles.title, roles.salary, roles.id AS roles_id, departments.department_name FROM  roles INNER JOIN departments on roles.department_id = departments.id;
   `;
   db.query(mysql, (err, rows) => {
     if (err) {
@@ -107,7 +111,7 @@ function viewRole() {
   });
 }
 function viewEmploy() {
-  let mysql = `SELECT employee.id AS employee_id, employee.first_name, employee.last_name, roles.title, departments.department_name, roles.salary, manager.first_name AS manager  FROM employee INNER JOIN roles on employee.role_id = roles.id INNER JOIN departments on roles.department_id = departments.id INNER JOIN employee manager  on manager.id = employee.manager_id;`;
+  mysql = `SELECT employee.id AS employee_id, employee.first_name, employee.last_name, roles.title, departments.department_name, roles.salary, manager.first_name AS manager  FROM employee INNER JOIN roles on employee.role_id = roles.id INNER JOIN departments on roles.department_id = departments.id INNER JOIN employee manager  on manager.id = employee.manager_id;`;
   db.query(mysql, (err, rows) => {
     if (err) {
       console.log(err);
@@ -120,7 +124,8 @@ function viewEmploy() {
 
 function addDep() {
   inquirer.prompt(addDepart).then((data) => {
-    let mysql = `INSERT INTO departments(department_name) VALUE (?);`;
+    departments.push(data.departName);
+    mysql = `INSERT INTO departments(department_name) VALUE (?);`;
     const params = data.departName;
     db.query(mysql, params, (err, rows) => {
       if (err) {
@@ -134,10 +139,11 @@ function addDep() {
 
 function addRoles() {
   inquirer.prompt(addRole).then((data) => {
-    console.log(data.department, data.title, data.salary);
+    // console.log(data.department, data.title, data.salary);
+    // console.log(departments);
     switch (data.department) {
       case "Human Resources":
-        let mysql = `INSERT INTO roles(title, salary, department_id)
+        mysql = `INSERT INTO roles(title, salary, department_id)
             Values('${data.title}', '${data.salary}', 1)`;
         db.query(mysql, (err, rows) => {
           if (err) {
@@ -189,7 +195,7 @@ function addRoles() {
 
 function addEmploy() {
   inquirer.prompt(addEmployee).then((data) => {
-    console.log(data);
+    // console.log(data);
     switch (data.role) {
       case "Human Resources Representative":
         mysql = `INSERT INTO employee(first_name, last_name, role_id, manager_id)
